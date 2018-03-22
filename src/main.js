@@ -144,17 +144,11 @@ function webGLStart() {
 
 	// Initialize shaders, load textures and add the wanted tetrominos.
     initShaders("vertexshader","fragmentshader");
-	loadTextures();
-	ObjectManager.addBackground();
-    ObjectManager.addTetromino("l");
-	ObjectManager.addTetromino("n");
-	
 
     // set clearColor to black (r,g,b,a) and enable depth test.
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 	
-	AnimationHandler.startGravity();
 	GameManager.initializeGame();
     renderLoop();
 }

@@ -27,10 +27,10 @@ ObjectManager = function(){
 
 	// Determines which tetromino to initialize.
 	function addTetromino(input) {
-		if(input=="l"){
+		if(input==1){
 			initTetromino(LShape);
 		}
-		else if(input=="n"){
+		else if(input==2){
 			initTetromino(NShape);
 		}
 	}
@@ -45,8 +45,7 @@ ObjectManager = function(){
 		mat4.identity(mvMatrix);
 		
 		// the following translate is to put the two shapes in different places
-		if(numItems==6) {mat4.translate(mvMatrix, mvMatrix, [-5, 0, 0]);}
-		else if(numItems==8) {mat4.translate(mvMatrix, mvMatrix, [5, 0, 0]);}
+		mat4.translate(mvMatrix, mvMatrix, [0, 4, 0]);
 		
 		tetrominos.push(new Object(createVertexPositionBuffer(vertices,numItems), createVertexTexcoordsBuffer(texcoords,numItems), mvMatrix, 0));
 	}

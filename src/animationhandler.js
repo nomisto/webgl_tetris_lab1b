@@ -3,6 +3,7 @@ AnimationHandler = function(){
 	var animationsProgress = [];
 	var mvMatrix;
 	var tetrominos = ObjectManager.getAllTetrominos();
+	var gravity=true;
 	
 	// returns the time elapsed between two executions of this function
 	var then = new Date().getTime();
@@ -21,6 +22,7 @@ AnimationHandler = function(){
 		else if (animationsStack[0]==5) {ObjectManager.decrementTetrominoOrientation(0);}
 		animationsStack.shift();
 		animationsProgress.shift();
+	    gravitate();
 	}
 	
 	/* inserts the desired animation at the end of the queue animationsStack
@@ -63,6 +65,7 @@ AnimationHandler = function(){
 	  and refreshes the deltaTime */
 	var deltaTime;
 	function animate() {
+		console.log(animationsStack.length);
 		if(mvMatrix==null){mvMatrix = tetrominos[0].mvMatrix;}
 		deltaTime = getDeltaTime();
 		if (animationsStack[0] == 1){
@@ -148,8 +151,29 @@ AnimationHandler = function(){
 		mat4.translate(mvMatrix, mvMatrix, [0,value,0]);
 	}
 	
+	function setGravity(input){
+		gravity=input;
+	}
+	
+	function gravitate() {
+		if(gravity==true){
+			AnimationHandler.addAnimation(4);
+		}
+	}
+	
+	function startGravity(){
+		gravity=true;
+		gravitate();
+	}
+	
+	function stopGravity(){
+		gravity=false;
+	}
+	
 	return{
 		addAnimation: addAnimation,
-		animate: animate
+		animate: animate,
+		startGravity: startGravity,
+		stopGravity: stopGravity
 	}
 }();

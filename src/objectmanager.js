@@ -1,7 +1,7 @@
 ObjectManager = function(){
 	var tetrominos = [];
 	var background;
-	var unitLength = 64.0211062714;
+	var unitLength = 50;
 	
 	// The object class stores the Buffer of the Vertexpositions and of the Texturecoords.
 	// Also stores the model-view matrix and the orientation of the object.
@@ -45,8 +45,8 @@ ObjectManager = function(){
 		mat4.identity(mvMatrix);
 		
 		// the following translate is to put the two shapes in different places
-		if(numItems==6) {mat4.translate(mvMatrix, mvMatrix, [-3, 0, 0]);}
-		else if(numItems==8) {mat4.translate(mvMatrix, mvMatrix, [3, 0, 0]);}
+		if(numItems==6) {mat4.translate(mvMatrix, mvMatrix, [-5, 0, 0]);}
+		else if(numItems==8) {mat4.translate(mvMatrix, mvMatrix, [5, 0, 0]);}
 		
 		tetrominos.push(new Object(createVertexPositionBuffer(vertices,numItems), createVertexTexcoordsBuffer(texcoords,numItems), mvMatrix, 0));
 	}

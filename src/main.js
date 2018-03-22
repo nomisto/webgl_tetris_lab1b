@@ -95,7 +95,7 @@ function drawScene() {
 
     var pMatrix = mat4.create();
     mat4.identity(pMatrix);
-    mat4.perspective(pMatrix, 45, (gl.viewportWidth/gl.viewportHeight), 0.1, 2000.0);
+    mat4.perspective(pMatrix, Math.PI/2, (gl.viewportWidth/gl.viewportHeight), 0.1, 2000.0);
     setPMatrixUniform(pMatrix);
 	
 	var background = ObjectManager.getBackground();
@@ -116,6 +116,7 @@ function drawScene() {
         gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, o.vertexPositionBuffer.numItems);
     });
+	console.log(mat4.str(pMatrix));
 }
 
 // the render loop, which loops the whole runtime
@@ -153,5 +154,7 @@ function webGLStart() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 	
+	AnimationHandler.startGravity();
+	GameManager.initializeGame();
     renderLoop();
 }

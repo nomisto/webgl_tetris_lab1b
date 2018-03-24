@@ -70,22 +70,6 @@ function setMvMatrixUniform(mvMatrix) {
 	gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 }
 
-// asynchronosly loads the image, creates a texture and binds it
-function loadTextures(){
-		var texture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		
-		var image = new Image();
-		image.src = "resources/textures.png";
-		image.addEventListener('load', function() {
-		  gl.bindTexture(gl.TEXTURE_2D, texture);
-		  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-		  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-		});
-}
-
 
 //Draws the Arrays and hands over the belonging mvMatrix of all tetrominos/objects stored in the ObjectManager
 //Also creates the perspective Matrix and sets it to the uniform.
@@ -108,15 +92,17 @@ function drawScene() {
 	
     
     ObjectManager.getAllTetrominos().forEach(function(o) {
-        setMvMatrixUniform(o.mvMatrix);
-		
-        gl.bindBuffer(gl.ARRAY_BUFFER, o.vertexPositionBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, o.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, o.vertexTexcoordsBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, o.vertexPositionBuffer.numItems);
-    });
+		for (i=0; i<4; i++){
+			setMvMatrixUniform(o.mvMatrix[i]);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, o.vertexPositionBuffer[i]);
+			gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+			gl.bindBuffer(gl.ARRAY_BUFFER, o.vertexTexcoordsBuffer[i]);
+			gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
+			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+		}
 	console.log(mat4.str(pMatrix));
+	});
 }
 
 // the render loop, which loops the whole runtime

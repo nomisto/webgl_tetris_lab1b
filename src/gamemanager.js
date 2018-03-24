@@ -4,7 +4,7 @@ GameManager = function(){
 	
 	function initializeGame(){
 		
-		loadTextures();
+		Texture.loadTextures();
 		ObjectManager.addBackground();
 		
 		numberUnitsHeight = parseInt(500/ObjectManager.getUnitLength());
@@ -20,7 +20,7 @@ GameManager = function(){
 	
 	function spawnTetromino(){
 		var i = Math.floor((Math.random() * 2) + 1);
-		ObjectManager.addTetromino(i);
+		ObjectManager.addTetromino(1);
 	}
 	
 	

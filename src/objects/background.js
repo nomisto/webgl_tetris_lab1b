@@ -25,6 +25,19 @@ Background = function() {
 		return 4;
 	}
 
+	// Initializes an object as the background.
+	// Function and storage is separately from the tetrominos, because the background shouldn't scale if the unitlength is set to a different value.
+	function addBackground() {
+		var vertices = Background.getVertices();
+		var texcoords = Background.getTexcoords();
+		var numItems = Background.getNumItems();
+		
+		var mvMatrix = mat4.create();
+		mat4.identity(mvMatrix);
+		
+		background = new Object(createVertexPositionBuffer(vertices), createTexcoordsBuffer(texcoords), mvMatrix, 0)
+	}
+	
 	return {
 		getVertices: getVertices,
 		getTexcoords: getTexcoords,

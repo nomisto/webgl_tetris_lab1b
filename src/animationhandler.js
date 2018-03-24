@@ -121,7 +121,10 @@ AnimationHandler = function(){
 	
 	// calculates the rotation-matrix of the mvMatrix by the given angle around the z-axis
 	function rotate(angle) {
-		mat4.rotateZ(mvMatrix, mvMatrix, gradToRad(angle));
+		for(i=0; i<4; i++){
+			mat4.translate(mvMatrix, mvMatrix, [-blocks[i*2], -blocks[i*2+1], 0]);
+			mat4.rotateZ(mvMatrix[i], mvMatrix[i], gradToRad(angle));
+			mat4.translate(mvMatrix, mvMatrix, [blocks[i*2], blocks[i*2+1], 0]);
 	}
 	
 	// determines the orientation of the object and translates it by the given value in relation to the display X-axis

@@ -19,8 +19,8 @@ GameManager = function(){
 	}
 	
 	function spawnTetromino(){
-		var i = Math.floor((Math.random() * 2) + 1);
-		ObjectManager.addTetromino(1);
+		var i = Math.floor((Math.random() * 7) + 1);
+		ObjectManager.addTetromino(i);
 	}
 	
 	

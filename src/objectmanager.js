@@ -6,11 +6,26 @@ ObjectManager = function(){
 	
 	// The object class stores the Buffer of the Vertexpositions and of the Texturecoords.
 	// Also stores the model-view matrix and the orientation of the object.
-	function Tetromino(vertexPositionBufferArray, vertexTexcoordsBufferArray, mvMatrixArray, orientation) {
+	function Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrixArray, vectorToRotationOriginArray, orientation) {
 		this.vertexPositionBufferArray=vertexPositionBufferArray;
 		this.texcoordsBufferArray=texcoordsBufferArray;
 		this.mvMatrixArray = mvMatrixArray;
+		this.vectorToRotationOriginArray = vectorToRotationOriginArray;
 		this.orientation = orientation;
+	}
+	
+	
+	// Initializes an object as the background.
+	// Function and storage is separately from the tetrominos, because the background shouldn't scale if the unitlength is set to a different value.
+	function addBackground() {
+		var vertices = Background.getVertices();
+		var texcoords = Background.getTexcoords();
+		var numItems = Background.getNumItems();
+		
+		var mvMatrix = mat4.create();
+		mat4.identity(mvMatrix);
+		
+		background = new Tetromino(createVertexPositionBuffer(vertices), createTexcoordsBuffer(texcoords), mvMatrix, 0)
 	}
 
 	// Determines which tetromino to initialize.
@@ -19,7 +34,22 @@ ObjectManager = function(){
 			initTetromino(LShape);
 		}
 		else if(input==2){
-			initTetromino(NShape);
+			initTetromino(ZShape);
+		}
+		else if(input==3){
+			initTetromino(JShape);
+		}
+		else if(input==4){
+			initTetromino(SShape);
+		}
+		else if(input==5){
+			initTetromino(OShape);
+		}
+		else if(input==6){
+			initTetromino(IShape);
+		}
+		else if(input==7){
+			initTetromino(TShape);
 		}
 	}
 
@@ -36,10 +66,8 @@ ObjectManager = function(){
 		
 		var blocks = x.getBlocks();
 		
-		var texturetypex = Math.floor((Math.random() * 3));
+		var texturetypex = Math.floor((Math.random() * 5));
 		var texturetypey = Math.floor((Math.random() * 2));
-		
-		var texcoords = [];
 		
 		for(i = 0; i<4; i++){
 			vertexPositionBufferArray.push(blockVertexBuffer);
@@ -49,11 +77,12 @@ ObjectManager = function(){
 			
 			var mvMatrix = mat4.create();
 			mat4.identity(mvMatrix);
+			mat4.translate(mvMatrix, mvMatrix, [-0.5,7.5,0]);
 			mat4.translate(mvMatrix, mvMatrix, [blocks[i*2], blocks[i*2+1], 0]);
 			mvMatrices.push(mvMatrix);
 		}
 		
-		tetrominos.push(new Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, 0));
+		tetrominos.push(new Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, x.getVectorToRotationOrigin(), 0));
 	}
 
 	// Creates a vertexposition buffer and binds it 
@@ -131,6 +160,7 @@ ObjectManager = function(){
 	
 	return{
 		createVertexPositionBuffer: createVertexPositionBuffer,
+		addBackground: addBackground,
 		addTetromino: addTetromino,
 		addBackground: addBackground,
 		setUnitLength: setUnitLength,

@@ -7,11 +7,11 @@ InputHandler = function(){
 	function handleInput() {
 		if ((currentlyPressedKeys[68] || currentlyPressedKeys[39]) && strokeBlock == false) {
 			strokeBlock=true;
-			AnimationHandler.addAnimation(1);
+			GameManager.moveRight();
 		}
 		if ((currentlyPressedKeys[65] || currentlyPressedKeys[37]) && strokeBlock == false) {
 			strokeBlock=true;
-			AnimationHandler.addAnimation(2);
+			GameManager.moveLeft();
 		}
 		if ((currentlyPressedKeys[87] || currentlyPressedKeys[38]) && strokeBlock == false) {
 			strokeBlock=true;

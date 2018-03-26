@@ -17,11 +17,24 @@ AnimationHandler = function(){
 	   If the finished animation was a counterclockwise rotation, the orientation of the tetromino-object decrements by one.
 	   If the finished animation was a clockwise rotation, the orientation of the tetromino-object increments by one. */
 	function shift() {
-		if(animationsStack[0]==6){ObjectManager.incrementTetrominoOrientation(0);}
-		else if (animationsStack[0]==5) {ObjectManager.decrementTetrominoOrientation(0);}
-		if(animationsStack[0]==4){GameManager.gravitate();}
-		animationsStack.shift();
-		animationsProgress.shift();
+		if(animationsStack[0]==6){current.orientation++;}
+		else if (animationsStack[0]==5) {current.orientation--;}
+		
+		// a little bit ugly but i cant gravitate and then shift
+		// and i cant shift and then make the if statement, because at the shift the information ==4 is lost.
+		if(animationsStack[0]==4){
+			animationsStack.shift();
+			animationsProgress.shift();
+			GameManager.gravitate();
+		} else {
+			animationsStack.shift();
+			animationsProgress.shift();
+		}
+	}
+	
+	function flush(){
+		animationsStack = [];
+		animationsProgress = [];
 	}
 	
 	/* inserts the desired animation at the end of the queue animationsStack
@@ -35,6 +48,9 @@ AnimationHandler = function(){
 	function addAnimation(input){
 		animationsStack.push(input);
 		animationsProgress.push(0);
+		current = GameManager.getCurrent();
+		console.log(animationsStack.length);
+		console.log(animationsProgress.length);
 	}
 	
 	
@@ -42,7 +58,6 @@ AnimationHandler = function(){
 	  and refreshes the deltaTime */
 	var deltaTime;
 	function animate() {
-		console.log(animationsStack.length);
 		deltaTime = getDeltaTime();
 		if (animationsStack[0] == 1){
 			moveX(getValue());
@@ -106,20 +121,18 @@ AnimationHandler = function(){
 	
 	// determines the orientation of the object and translates it by the given value in relation to the display X-axis
 	function moveX(value){
-		var orientation = ObjectManager.getTetrominoOrientation(0);
-		if(orientation == 0) { translateX(value); }
-		else if(orientation == 1) { translateY(value); }
-		else if(orientation == 2) { translateX(-value); }
-		else if(orientation == 3) { translateY(-value); }
+		if(current.getTetrominoOrientation() == 0) { translateX(value); }
+		else if(current.getTetrominoOrientation() == 1) { translateY(value); }
+		else if(current.getTetrominoOrientation() == 2) { translateX(-value); }
+		else if(current.getTetrominoOrientation() == 3) { translateY(-value); }
 	}
 	
 	// determines the orientation of the object and translates it by the given value in relation to the display Y-axis
 	function moveY(value){
-		var orientation = ObjectManager.getTetrominoOrientation(0);
-		if(orientation == 0) { translateY(value); }
-		else if(orientation == 1) { translateX(-value); }
-		else if(orientation == 2) { translateY(-value); }
-		else if(orientation == 3) { translateX(value); }
+		if(current.getTetrominoOrientation() == 0) { translateY(value); }
+		else if(current.getTetrominoOrientation() == 1) { translateX(-value); }
+		else if(current.getTetrominoOrientation() == 2) { translateY(-value); }
+		else if(current.getTetrominoOrientation() == 3) { translateX(value); }
 	}
 	
 	// translates the mvMatrix in X-direction
@@ -135,13 +148,9 @@ AnimationHandler = function(){
 		}
 	}
 	
-	function setCurrent(input){
-		current = input;
-	}
-	
 	return{
 		addAnimation: addAnimation,
 		animate: animate,
-		setCurrent: setCurrent
+		flush: flush
 	}
 }();

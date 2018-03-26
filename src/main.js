@@ -101,7 +101,6 @@ function drawScene() {
 			gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
 			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 		}
-	console.log(mat4.str(pMatrix));
 	});
 }
 
@@ -125,9 +124,6 @@ function webGLStart() {
     document.onkeydown = InputHandler.handleKeyDown;
     document.onkeyup = InputHandler.handleKeyUp;
 	
-	// Write the current unit length to the html
-	document.getElementById("currentlength").innerHTML = "Current length of one unit: " + ObjectManager.getUnitLength() + " px.";
-
 	// Initialize shaders, load textures and add the wanted tetrominos.
     initShaders("vertexshader","fragmentshader");
 

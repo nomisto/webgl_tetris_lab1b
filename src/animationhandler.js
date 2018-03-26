@@ -2,11 +2,7 @@ AnimationHandler = function(){
 	var animationsStack = [];
 	var animationsProgress = [];
 	
-	var gravity=true;
-	
-	var tetrominos = ObjectManager.getAllTetrominos();
-	var mvMatrix;
-	var vectorToRotationOriginArray;
+	var current;
 	
 	// returns the time elapsed between two executions of this function
 	var then = new Date().getTime();
@@ -23,9 +19,9 @@ AnimationHandler = function(){
 	function shift() {
 		if(animationsStack[0]==6){ObjectManager.incrementTetrominoOrientation(0);}
 		else if (animationsStack[0]==5) {ObjectManager.decrementTetrominoOrientation(0);}
+		if(animationsStack[0]==4){GameManager.gravitate();}
 		animationsStack.shift();
 		animationsProgress.shift();
-	    gravitate();
 	}
 	
 	/* inserts the desired animation at the end of the queue animationsStack
@@ -37,24 +33,7 @@ AnimationHandler = function(){
 	  6 ... Rotate Clockwise
 	  and inserts a 0 at the end of the array animationsProgress, representing the Progress for this animation */
 	function addAnimation(input){
-		if(input==1){
-			animationsStack.push(1);
-		}
-		else if(input==2){
-			animationsStack.push(2);
-		}
-		else if(input==3){
-			animationsStack.push(3);
-		}
-		else if(input==4){
-			animationsStack.push(4);
-		}
-		else if(input==5){
-			animationsStack.push(5);
-		}
-		else if(input==6){
-			animationsStack.push(6);
-		}
+		animationsStack.push(input);
 		animationsProgress.push(0);
 	}
 	
@@ -64,8 +43,6 @@ AnimationHandler = function(){
 	var deltaTime;
 	function animate() {
 		console.log(animationsStack.length);
-		if(mvMatrix==null){mvMatrix = tetrominos[0].mvMatrixArray;}
-		if(vectorToRotationOriginArray==null){vectorToRotationOriginArray = tetrominos[0].vectorToRotationOriginArray;}
 		deltaTime = getDeltaTime();
 		if (animationsStack[0] == 1){
 			moveX(getValue());
@@ -121,9 +98,9 @@ AnimationHandler = function(){
 	// calculates the rotation-matrix of the mvMatrix by the given angle around the z-axis
 	function rotate(angle) {
 		for(i=0; i<4; i++){
-			mat4.translate(mvMatrix[i], mvMatrix[i], [vectorToRotationOriginArray[2*i], vectorToRotationOriginArray[2*i+1], 0]);
-			mat4.rotateZ(mvMatrix[i], mvMatrix[i], gradToRad(angle));
-			mat4.translate(mvMatrix[i], mvMatrix[i], [-vectorToRotationOriginArray[2*i], -vectorToRotationOriginArray[2*i+1], 0]);
+			mat4.translate(current.mvMatrixArray[i], current.mvMatrixArray[i], [current.vectorToRotationOriginArray[2*i], current.vectorToRotationOriginArray[2*i+1], 0]);
+			mat4.rotateZ(current.mvMatrixArray[i], current.mvMatrixArray[i], gradToRad(angle));
+			mat4.translate(current.mvMatrixArray[i], current.mvMatrixArray[i], [-current.vectorToRotationOriginArray[2*i], -current.vectorToRotationOriginArray[2*i+1], 0]);
 		}
 	}
 	
@@ -148,39 +125,23 @@ AnimationHandler = function(){
 	// translates the mvMatrix in X-direction
 	function translateX(value){
 		for(i=0; i<4; i++){
-			mat4.translate(mvMatrix[i], mvMatrix[i], [value,0,0]);
+			mat4.translate(current.mvMatrixArray[i], current.mvMatrixArray[i], [value,0,0]);
 		}
 	}
 	// translates the mvMatrix in Y-direction
 	function translateY(value){
 		for(i=0; i<4; i++){
-			mat4.translate(mvMatrix[i], mvMatrix[i], [0,value,0]);
+			mat4.translate(current.mvMatrixArray[i], current.mvMatrixArray[i], [0,value,0]);
 		}
 	}
 	
-	function setGravity(input){
-		gravity=input;
-	}
-	
-	function gravitate() {
-		if(gravity==true){
-			AnimationHandler.addAnimation(4);
-		}
-	}
-	
-	function startGravity(){
-		gravity=true;
-		gravitate();
-	}
-	
-	function stopGravity(){
-		gravity=false;
+	function setCurrent(input){
+		current = input;
 	}
 	
 	return{
 		addAnimation: addAnimation,
 		animate: animate,
-		startGravity: startGravity,
-		stopGravity: stopGravity
+		setCurrent: setCurrent
 	}
 }();

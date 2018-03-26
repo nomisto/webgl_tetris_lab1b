@@ -81,8 +81,9 @@ ObjectManager = function(){
 			mat4.translate(mvMatrix, mvMatrix, [blocks[i*2], blocks[i*2+1], 0]);
 			mvMatrices.push(mvMatrix);
 		}
-		
-		tetrominos.push(new Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, x.getVectorToRotationOrigin(), 0));
+		var x = new Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, x.getVectorToRotationOrigin(), 0)
+		tetrominos.push(x);
+		AnimationHandler.setCurrent(x);
 	}
 
 	// Creates a vertexposition buffer and binds it 

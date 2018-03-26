@@ -15,11 +15,11 @@ InputHandler = function(){
 		}
 		if ((currentlyPressedKeys[87] || currentlyPressedKeys[38]) && strokeBlock == false) {
 			strokeBlock=true;
-			AnimationHandler.stopGravity();
+			GameManager.stopGravity();
 		}
 		if ((currentlyPressedKeys[83] || currentlyPressedKeys[40]) && strokeBlock == false) {
 			strokeBlock=true;
-			AnimationHandler.startGravity();
+			GameManager.startGravity();
 		}
 		if ((currentlyPressedKeys[49] || currentlyPressedKeys[56]) && strokeBlock == false) {
 			strokeBlock=true;

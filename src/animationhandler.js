@@ -17,18 +17,17 @@ AnimationHandler = function(){
 	   If the finished animation was a counterclockwise rotation, the orientation of the tetromino-object decrements by one.
 	   If the finished animation was a clockwise rotation, the orientation of the tetromino-object increments by one. */
 	function shift() {
-		if(animationsStack[0]==6){current.orientation++;}
-		else if (animationsStack[0]==5) {current.orientation--;}
-		
-		// a little bit ugly but i cant gravitate and then shift
-		// and i cant shift and then make the if statement, because at the shift the information ==4 is lost.
-		if(animationsStack[0]==4){
-			animationsStack.shift();
-			animationsProgress.shift();
+		var store = animationsStack[0];
+		animationsStack.shift();
+		animationsProgress.shift();
+		if(store==5){
+			current.orientation--;
+		}
+		else if(store==6){
+			current.orientation++;
+		}
+		if(animationsStack.length==0){
 			GameManager.gravitate();
-		} else {
-			animationsStack.shift();
-			animationsProgress.shift();
 		}
 	}
 	
@@ -49,8 +48,6 @@ AnimationHandler = function(){
 		animationsStack.push(input);
 		animationsProgress.push(0);
 		current = GameManager.getCurrent();
-		console.log(animationsStack.length);
-		console.log(animationsProgress.length);
 	}
 	
 	
@@ -77,6 +74,10 @@ AnimationHandler = function(){
 		else if (animationsStack[0] == 6){
 			rotate(-getAngle());
 		}
+		
+		if(animationsProgress[0]==100){
+			shift();
+		}
 	}
 	
 	// returns the angle for one rotation animationstep using the deltatime
@@ -87,7 +88,7 @@ AnimationHandler = function(){
 		}
 		else {
 			angle = 90-animationsProgress[0];
-			shift();
+			animationsProgress[0]=100;
 		}
 		return angle;
 	}
@@ -100,7 +101,7 @@ AnimationHandler = function(){
 		}
 		else {
 			value = 1 - animationsProgress[0];
-			shift();
+			animationsProgress[0]=100;
 		}
 		return value;
 	}

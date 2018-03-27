@@ -8,19 +8,29 @@ class Tetromino{
 		this.orientation = orientation;
 	}
 	
+	mod(m,n){
+		return ((m % n) + n) % n;
+	}
 	
 	// returns the orientation of the tetromino of given index
 	getTetrominoOrientation(){
-		return ((this.orientation % 4) + 4) % 4;
+		return this.mod(this.orientation,4);
 	}
 	
 	getBlocks(){
 		return this.blocks;
 	}
 	
-	getRotatedBlocks(){
-		var orientation = this.getTetrominoOrientation();
+	getRotatedBlocks(input){
+		var orientation;
+		if(input!=null){
+			orientation = this.mod(input,4);
+		} else { 
+			orientation = this.getTetrominoOrientation();
+		}
+		
 		if(orientation==0){return this.blocks;}
+		
 		var result = [];
 		for(i=0;i<4;i++){
 			var resultX = this.blocks[2*i] + this.vectorToRotationOriginArray[2*i];

@@ -23,11 +23,11 @@ InputHandler = function(){
 		}
 		if ((currentlyPressedKeys[49] || currentlyPressedKeys[56]) && strokeBlock == false) {
 			strokeBlock=true;
-			AnimationHandler.addAnimation(5);
+			GameManager.rotateCCl();
 		}
 		if ((currentlyPressedKeys[51] || currentlyPressedKeys[48]) && strokeBlock == false) {
 			strokeBlock=true;
-			AnimationHandler.addAnimation(6);
+			GameManager.rotateCl();
 		}
 	}
 

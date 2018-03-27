@@ -2,6 +2,8 @@ AnimationHandler = function(){
 	var animationsStack = [];
 	var animationsProgress = [];
 	
+	var gravitationSpeed = 850;
+	
 	var current;
 	
 	// returns the time elapsed between two executions of this function
@@ -95,7 +97,7 @@ AnimationHandler = function(){
 	
 	// returns the value of one horizontal/vertical-movement animationstep using the deltatime
 	function getValue(){
-		var value = deltaTime/850;
+		var value = deltaTime/gravitationSpeed;
 		if ((value+animationsProgress[0]) < 1) {
 			animationsProgress[0] += value;
 		}
@@ -104,6 +106,10 @@ AnimationHandler = function(){
 			animationsProgress[0]=100;
 		}
 		return value;
+	}
+	
+	function setGravitationSpeed(speed){
+		gravitationSpeed=speed;
 	}
 	
 	// converts the angle from degrees to radiant
@@ -152,6 +158,7 @@ AnimationHandler = function(){
 	return{
 		addAnimation: addAnimation,
 		animate: animate,
-		flush: flush
+		flush: flush,
+		setGravitationSpeed: setGravitationSpeed
 	}
 }();

@@ -11,7 +11,6 @@ GameManager = function(){
 	var currY;
 	
 	function initializeGame(){
-		
 		for(i=0; i<8; i++){
 			occupiedBlocks[i] = [];
 			for(j=0; j<16; j++){
@@ -26,6 +25,9 @@ GameManager = function(){
 	
 	function startGame(){
 		spawnTetromino();
+	}
+	
+	function stopGame(){
 	}
 	
 	function spawnTetromino(){
@@ -84,16 +86,20 @@ GameManager = function(){
 	
 	
 	function gravitate() {
+		print();
 			if(!occupied(currX,currY+1,0)){
 				if(gravity){
 					AnimationHandler.addAnimation(4);
 					currY++;
 				}
 			} 
-			else {
+			else if(!occupied(currX,currY,0)){
 				updateOccupiedBlocks();
 				stopGravity();
 				spawnTetromino();
+			} else {
+				ObjectManager.deleteLast();
+				stopGame();
 			}
 	}
 	
@@ -112,7 +118,7 @@ GameManager = function(){
 			gravity=true;
 			gravitate();
 		} else {
-			AnimationHandler.setGravitationSpeed(400);
+			AnimationHandler.setGravitationSpeed(200);
 		}
 	}
 	
@@ -134,9 +140,9 @@ GameManager = function(){
 	}
 	
 	function print(){
-		console.log("-----------------------------\n");
+		console.log("----1-2-3-4-5-6-7-8----------\n");
 		for(j=0; j<16; j++){
-			var str = "";
+			var str = j + "|| ";
 			for(i=0; i<8; i++){
 				str += (occupiedBlocks[i][j] + " ");
 			}

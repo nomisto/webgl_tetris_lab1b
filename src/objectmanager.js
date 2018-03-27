@@ -82,6 +82,7 @@ ObjectManager = function(){
 			mat4.translate(mvMatrix, mvMatrix, [blocks[i*2], blocks[i*2+1], 0]);
 			mvMatrices.push(mvMatrix);
 		}
+		console.log(x);
 		var x = new Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, blocks, x.getVectorToRotationOrigin(), 0)
 		tetrominos.push(x);
 		GameManager.setCurrent(x);
@@ -110,6 +111,10 @@ ObjectManager = function(){
 		return tetrominos;
 	}
 	
+	function deleteLast(){
+		tetrominos.pop();
+	}
+	
 	// returns the background object
 	function getBackground(){
 		return background;
@@ -120,6 +125,7 @@ ObjectManager = function(){
 		addBackground: addBackground,
 		addTetromino: addTetromino,
 		getAllTetrominos: getAllTetrominos,
+		deleteLast: deleteLast,
 		getBackground: getBackground
 	}
 }();

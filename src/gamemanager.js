@@ -34,36 +34,80 @@ GameManager = function(){
 		AnimationHandler.flush();
 		var i = Math.floor((Math.random() * 7) + 1);
 		ObjectManager.addTetromino(i);
-		currX = 3;
-		currY = 0;
 		startGravity();
 	}
 	
-	function occupied(x,y,index,orientationAfterRotation){
+	function checkFullLine(){
+		var fullY = [];
 		
-		var currentBlocks = current.getRotatedBlocks(orientationAfterRotation);
-		var overallX = x + currentBlocks[2*index];
-		var overallY = y - currentBlocks[2*index + 1];
-		
-		if(overallX >= numberUnitsWidth || overallY >= numberUnitsHeight || getBlock(overallX,overallY)){
-			return true;
-		} else if(index == 3){
-			return false;
-		} else {
-			return occupied(x,y,++index,orientationAfterRotation);
+		forEachBlockOfCurrent(function(x,y){
+			var check = 0;
+			for(j=0; j<8; j++){
+				if(occupiedBlocks[j][y]==0){break;}
+				else {check++;}
+			}
+			
+			if(check==8){
+				fullY = fullY.filter(value => value!=y);
+				fullY.push(y);
+			}
+		});
+		if(fullY.length!=0){
+			fullY.sort(function(a, b){return a - b});
+			fullY.forEach(function(o){
+				deleteFullLine(o);
+				falldown(o);
+			});
 		}
 	}
 	
+	function deleteFullLine(o){
+		for(k=0; k<8; k++){
+			var tetrominoblockid = occupiedBlocks[k][o];
+			var blockid = tetrominoblockid % 10;
+			var tetrominoid = Math.floor(tetrominoblockid/10);
+			var tetro = ObjectManager.getTetrominoByIndex(tetrominoid);
+			
+			tetro.deleteBlock(blockid);
+			setCurrent(tetro);
+			updateOccupiedBlocks();
+			occupiedBlocks[k][o]=0;
+			console.log("BLOCKLEN" + tetro.blocklength);
+		}
+	}
+	
+	function forEachBlockOfCurrent(func,orientationAfterRotation){
+		if(current!=null){
+			var currentBlocks = current.getRotatedBlocks(orientationAfterRotation);
+			for(i=0; i<current.blocklength; i++){
+					var x = currX + currentBlocks[2*i];
+					var y = currY - currentBlocks[2*i+1];
+					func(x,y);
+			}
+		}
+	}
+	
+	function occupied(movX,movY,orientationAfterRotation){
+		var result = false;
+		forEachBlockOfCurrent(function(x,y){
+			x += movX;
+			y += movY;
+			if(x >= numberUnitsWidth || y >= numberUnitsHeight || getBlock(x,y)){
+				result += true;
+			}
+		},orientationAfterRotation);
+		return result;
+	}
 	
 	function moveRight(){
-		if(!occupied(currX+1,currY,0)){
+		if(!occupied(1,0)){
 			AnimationHandler.addAnimation(1);
 			currX++;
 		}
 	};
 	
 	function moveLeft(){
-		if(!occupied(currX-1,currY,0)){
+		if(!occupied(-1,0)){
 			AnimationHandler.addAnimation(2);
 			currX--;
 		}
@@ -71,7 +115,7 @@ GameManager = function(){
 	
 	function rotateCCl(){
 		var orientationAfterRotation = current.getTetrominoOrientation() - 1;
-		if(!occupied(currX,currY,0,orientationAfterRotation)){
+		if(!occupied(0,0,orientationAfterRotation)){
 			AnimationHandler.addAnimation(5);
 		}
 	};
@@ -79,37 +123,59 @@ GameManager = function(){
 	
 	function rotateCl(){
 		var orientationAfterRotation = current.getTetrominoOrientation() + 1;
-		if(!occupied(currX,currY,0,orientationAfterRotation)){
+		if(!occupied(0,0,orientationAfterRotation)){
 			AnimationHandler.addAnimation(6);
 		}
 	};
 	
 	
 	function gravitate() {
-		print();
-			if(!occupied(currX,currY+1,0)){
-				if(gravity){
-					AnimationHandler.addAnimation(4);
+		if(!occupied(0,1)){
+			if(gravity){
+				AnimationHandler.addAnimation(4);
+				currY++;
+			}
+		} 
+		else if(!occupied(0,0)){
+			updateOccupiedBlocks();
+			stopGravity();
+			checkFullLine();
+			spawnTetromino();
+		} else {
+			ObjectManager.deleteLast();
+			stopGame();
+		}
+	}
+	
+	
+	function falldown(o) {
+		var fallen = [];
+		ObjectManager.getAllTetrominos().forEach(function(tetro){
+			console.log(tetro);
+			if(tetro.blocklength!=0){
+				setCurrent(tetro);
+				forEachBlockOfCurrent(function(x,y){
+					occupiedBlocks[x][y]=0;
+				});
+				if(!occupied(0,1)){
+					fallen.push(tetro.index);
 					currY++;
 				}
-			} 
-			else if(!occupied(currX,currY,0)){
 				updateOccupiedBlocks();
-				stopGravity();
-				spawnTetromino();
-			} else {
-				ObjectManager.deleteLast();
-				stopGame();
 			}
+		});
+		if(fallen.length!=0){
+			AnimationHandler.addAnimation(7,fallen);
+			falldown(o);
+		}
 	}
 	
 	function updateOccupiedBlocks(){
-		var currentBlocks = current.getRotatedBlocks();
-		for(i=0; i<4; i++){
-			var x = currX + currentBlocks[2*i];
-			var y = currY - currentBlocks[2*i+1];
-			occupiedBlocks[x][y]=1;
-		}
+			forEachBlockOfCurrent(function(x,y){
+				occupiedBlocks[x][y]= current.index * 10 + i;
+			});
+			current.currX=currX;
+			current.currY=currY;
 	}
 	
 	function startGravity(){
@@ -131,8 +197,10 @@ GameManager = function(){
 		return occupiedBlocks[x][y];
 	}
 	
-	function setCurrent(input){
-		current = input;
+	function setCurrent(tetro){
+		current = tetro;
+		currX=tetro.currX;
+		currY=tetro.currY;
 	}
 	
 	function getCurrent(){
@@ -144,7 +212,7 @@ GameManager = function(){
 		for(j=0; j<16; j++){
 			var str = j + "|| ";
 			for(i=0; i<8; i++){
-				str += (occupiedBlocks[i][j] + " ");
+				str += (Math.floor(occupiedBlocks[i][j]/10) + "" + occupiedBlocks[i][j]%10 + " ");
 			}
 			console.log(str + "\n");
 		}
@@ -157,6 +225,7 @@ GameManager = function(){
 		stopGravity: stopGravity,
 		setCurrent: setCurrent,
 		getCurrent: getCurrent,
+		print: print,
 		moveRight: moveRight,
 		moveLeft: moveLeft,
 		rotateCl: rotateCl,

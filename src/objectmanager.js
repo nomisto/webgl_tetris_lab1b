@@ -5,15 +5,7 @@ ObjectManager = function(){
 	var background;
 	var unitLength = 50;
 	
-	// The object class stores the Buffer of the Vertexpositions and of the Texturecoords.
-	/* Also stores the model-view matrix and the orientation of the object.
-	function Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrixArray, vectorToRotationOriginArray, orientation) {
-		this.vertexPositionBufferArray=vertexPositionBufferArray;
-		this.texcoordsBufferArray=texcoordsBufferArray;
-		this.mvMatrixArray = mvMatrixArray;
-		this.vectorToRotationOriginArray = vectorToRotationOriginArray;
-		this.orientation = orientation;
-	}*/
+	var index=1;
 	
 	
 	// Initializes an object as the background.
@@ -26,7 +18,7 @@ ObjectManager = function(){
 		var mvMatrix = mat4.create();
 		mat4.identity(mvMatrix);
 		
-		background = new Tetromino(createVertexPositionBuffer(vertices), createTexcoordsBuffer(texcoords), mvMatrix, 0)
+		background = [createVertexPositionBuffer(vertices), createTexcoordsBuffer(texcoords), mvMatrix];
 	}
 
 	// Determines which tetromino to initialize.
@@ -82,10 +74,10 @@ ObjectManager = function(){
 			mat4.translate(mvMatrix, mvMatrix, [blocks[i*2], blocks[i*2+1], 0]);
 			mvMatrices.push(mvMatrix);
 		}
-		console.log(x);
-		var x = new Tetromino(vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, blocks, x.getVectorToRotationOrigin(), 0)
+		var x = new Tetromino(index,vertexPositionBufferArray, texcoordsBufferArray, mvMatrices, blocks, x.getVectorToRotationOrigin(), 0, 3, 0);
 		tetrominos.push(x);
 		GameManager.setCurrent(x);
+		index++;
 	}
 
 	// Creates a vertexposition buffer and binds it 
@@ -111,6 +103,10 @@ ObjectManager = function(){
 		return tetrominos;
 	}
 	
+	function getTetrominoByIndex(index){
+		return tetrominos[index-1];
+	}
+	
 	function deleteLast(){
 		tetrominos.pop();
 	}
@@ -125,6 +121,7 @@ ObjectManager = function(){
 		addBackground: addBackground,
 		addTetromino: addTetromino,
 		getAllTetrominos: getAllTetrominos,
+		getTetrominoByIndex: getTetrominoByIndex,
 		deleteLast: deleteLast,
 		getBackground: getBackground
 	}

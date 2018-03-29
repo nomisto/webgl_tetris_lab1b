@@ -83,23 +83,25 @@ function drawScene() {
     setPMatrixUniform(pMatrix);
 	
 	var background = ObjectManager.getBackground();
-	setMvMatrixUniform(background.mvMatrixArray);	
-	gl.bindBuffer(gl.ARRAY_BUFFER, background.vertexPositionBufferArray);
-	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, background.vertexPositionBufferArray.itemSize, gl.FLOAT, false, 0, 0);
-	gl.bindBuffer(gl.ARRAY_BUFFER, background.texcoordsBufferArray);
+	setMvMatrixUniform(background[2]);	
+	gl.bindBuffer(gl.ARRAY_BUFFER, background[0]);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, background[1]);
 	gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
-	gl.drawArrays(gl.TRIANGLE_STRIP, 0, background.vertexPositionBufferArray.numItems);
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 	
     
     ObjectManager.getAllTetrominos().forEach(function(o) {
-		for (i=0; i<4; i++){
-			setMvMatrixUniform(o.mvMatrixArray[i]);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, o.vertexPositionBufferArray[i]);
-			gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-			gl.bindBuffer(gl.ARRAY_BUFFER, o.texcoordsBufferArray[i]);
-			gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
-			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+		for (i=0; i<o.blocklength; i++){
+			if(o.mvMatrixArray[i]!=null){
+				setMvMatrixUniform(o.mvMatrixArray[i]);
+				
+				gl.bindBuffer(gl.ARRAY_BUFFER, o.vertexPositionBufferArray[i]);
+				gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+				gl.bindBuffer(gl.ARRAY_BUFFER, o.texcoordsBufferArray[i]);
+				gl.vertexAttribPointer(shaderProgram.vertexTexcoordsAttribute, 2, gl.FLOAT, false, 0, 0);
+				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+			}
 		}
 	});
 }

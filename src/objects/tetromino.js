@@ -100,4 +100,12 @@ class Tetromino{
 		return this._currY;
 	}
 	
+	get blocks(){
+		return this._blocks;
+	}
+	
+	set blocks(value){
+		this._blocks=value;
+	}
+	
 };

@@ -33,7 +33,7 @@ GameManager = function(){
 	function spawnTetromino(){
 		AnimationHandler.flush();
 		var i = Math.floor((Math.random() * 7) + 1);
-		ObjectManager.addTetromino(7);
+		ObjectManager.addTetromino(i);
 		startGravity();
 	}
 	

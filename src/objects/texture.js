@@ -16,6 +16,7 @@ Texture = function() {
 		});
 	};
 		
+	//calculates the texcoords and returns it as a vector
 	function getTextureCoords(texturetypex, texturetypey, blockx, blocky){
 		return [
 			(512*texturetypex + 2048 + blockx*128 + 128) / 4608, (512*texturetypey + 128*blocky) / 1024,

@@ -9,6 +9,7 @@ LShape = function() {
 		];
 	}
 	
+	//returns a vector to the rotation origin of each block
 	function getVectorToRotationOrigin(){
 		return [
 			1,-1,

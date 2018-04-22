@@ -46,12 +46,16 @@
 	</head>
 	
 	<body onload="webGLStart();">
+		<div>
 		<canvas id="lab01-canvas" width="350" height="700"></canvas>
+		</div>
+		<div>
+		<p style="color:Blue;font-size:30px;" id="score"></p>
 		<br>
-		Length of one unit (in px):
-		<input type="number" id="unitlength" value="0">
-		<input type="submit" onclick="ObjectManager.setUnitLength()" value="Submit">
-		<p style="color:Red;" id="error"></p>
-		<p id="currentlength"></p>
+		<input type="button" onclick="GameManager.decreaseDifficulty()" value="Decrease difficulty"></input>
+		<input type="text" disabled id="difficulty"></input>
+		<input type="button" onclick="GameManager.increaseDifficulty()" value="Increase difficulty"></input>
+		</div>
+		
 	</body>
 </html>

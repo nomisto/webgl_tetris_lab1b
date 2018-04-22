@@ -1,7 +1,6 @@
 AnimationHandler = function(){
 	var animationsStack = [];
 	var animationsProgress = [];
-	var animationsData = [];
 	
 	var gravitationSpeed = 850;
 	
@@ -18,7 +17,9 @@ AnimationHandler = function(){
 	
 	/* deletes the first item of the animationsStack and the animationsProgress.
 	   If the finished animation was a counterclockwise rotation, the orientation of the tetromino-object decrements by one.
-	   If the finished animation was a clockwise rotation, the orientation of the tetromino-object increments by one. */
+	   If the finished animation was a clockwise rotation, the orientation of the tetromino-object increments by one.
+	   If the animation stack size is zero, it gravitates one time.
+	   */
 	function shift() {
 		var last = animationsStack.shift();
 		animationsProgress.shift();
@@ -28,16 +29,9 @@ AnimationHandler = function(){
 		else if(last==6){
 			current.orientation++;
 		}
-		if(last==7){
-			animationsData.shift();
-		} else if(animationsStack.length==0){
+		if(animationsStack.length==0){
 			GameManager.gravitate();
 		}
-	}
-	
-	function flush(){
-		//animationsStack = [];
-		//animationsProgress = [];
 	}
 	
 	/* inserts the desired animation at the end of the queue animationsStack
@@ -48,10 +42,9 @@ AnimationHandler = function(){
 	  5 ... Rotate Counterclockwise
 	  6 ... Rotate Clockwise
 	  and inserts a 0 at the end of the array animationsProgress, representing the Progress for this animation */
-	function addAnimation(input,data){
+	function addAnimation(input){
 		animationsStack.push(input);
 		animationsProgress.push(0);
-		if(data){animationsData.push(data);}
 		current = GameManager.getCurrent();
 	}
 	
@@ -78,9 +71,6 @@ AnimationHandler = function(){
 		}
 		else if (animationsStack[0] == 6){
 			rotate(-getAngle());
-		}
-		else if(animationsStack[0] == 7){
-			moveYData(-getValue());
 		}
 		
 		if(animationsProgress[0]==100){
@@ -134,35 +124,20 @@ AnimationHandler = function(){
 		else if(current.getTetrominoOrientation() == 3) { translateX(value); }
 	}
 	
-	function moveYData(value){
-		animationsData[0].forEach(function (o){
-			var tetro = ObjectManager.getTetrominoByIndex(o);
-			if(tetro.getTetrominoOrientation() == 0) { translateY(value,tetro); }
-			else if(tetro.getTetrominoOrientation() == 1) { translateX(-value,tetro); }
-			else if(tetro.getTetrominoOrientation() == 2) { translateY(-value,tetro); }
-			else if(tetro.getTetrominoOrientation() == 3) { translateX(value,tetro); }
-		});
-	}
 	
 	// translates the mvMatrix in X-direction
-	function translateX(value,tetro){
-		if(tetro==null){tetro=current;}
-		for(i=0; i<tetro.blocklength; i++){
-			if(tetro.mvMatrixArray[i]!=null){
-				mat4.translate(tetro.mvMatrixArray[i], tetro.mvMatrixArray[i], [value,0,0]);
-			}
+	function translateX(value){
+		for(i=0; i<current.blocklength; i++){
+			mat4.translate(current.mvMatrixArray[i], current.mvMatrixArray[i], [value,0,0]);
 		}
 	}
 	// translates the mvMatrix in Y-direction
-	function translateY(value,tetro){
-		if(tetro==null){tetro=current;}
-		for(i=0; i<tetro.blocklength; i++){
-			if(tetro.mvMatrixArray[i]!=null){
-				mat4.translate(tetro.mvMatrixArray[i], tetro.mvMatrixArray[i], [0,value,0]);
-			}
+	function translateY(value){
+		for(i=0; i<current.blocklength; i++){
+				mat4.translate(current.mvMatrixArray[i], current.mvMatrixArray[i], [0,value,0]);
 		}
 	}
-	
+
 	// converts the angle from degrees to radiant
 	function gradToRad(angle){
 		return angle * Math.PI / 180;
@@ -180,7 +155,6 @@ AnimationHandler = function(){
 	return{
 		addAnimation: addAnimation,
 		animate: animate,
-		flush: flush,
 		setGravitationSpeed: setGravitationSpeed
 	}
 }();

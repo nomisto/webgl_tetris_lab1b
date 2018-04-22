@@ -1,4 +1,5 @@
 Block = function() {
+	//returns the vertice positions as a vector
 	function getVertices(){
 		return [
 			0.5, 0.5, -8.0,
@@ -8,6 +9,7 @@ Block = function() {
 		];
 	}
 	
+	//returns the number of items
 	function getNumItems() {
 		return 4;
 	}

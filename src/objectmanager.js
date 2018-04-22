@@ -8,8 +8,7 @@ ObjectManager = function(){
 	var index=1;
 	
 	
-	// Initializes an object as the background.
-	// Function and storage is separately from the tetrominos, because the background shouldn't scale if the unitlength is set to a different value.
+	// Initializes the variable background (needed in main)
 	function addBackground() {
 		var vertices = Background.getVertices();
 		var texcoords = Background.getTexcoords();
@@ -103,18 +102,28 @@ ObjectManager = function(){
 		return tetrominos;
 	}
 	
+	//returns a tetromino of given index
 	function getTetrominoByIndex(index){
 		return tetrominos[index-1];
 	}
 	
+	//deletes the last tetromino (needed when the game ends)
 	function deleteLast(){
 		tetrominos.pop();
+		index--;
+	}
+	
+	//deletes all tetrominos
+	function deleteAll(){
+		tetrominos=[];
+		index = 1;
 	}
 	
 	// returns the background object
 	function getBackground(){
 		return background;
 	}
+	
 	
 	return{
 		createVertexPositionBuffer: createVertexPositionBuffer,
@@ -123,6 +132,7 @@ ObjectManager = function(){
 		getAllTetrominos: getAllTetrominos,
 		getTetrominoByIndex: getTetrominoByIndex,
 		deleteLast: deleteLast,
+		deleteAll: deleteAll,
 		getBackground: getBackground
 	}
 }();

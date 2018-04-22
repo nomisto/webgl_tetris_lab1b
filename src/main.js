@@ -133,6 +133,8 @@ function webGLStart() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 	
-	GameManager.initializeGame();
+	Texture.loadTextures();
+	ObjectManager.addBackground();
+	GameManager.initializeNewGame();
     renderLoop();
 }

@@ -1,3 +1,15 @@
+
+/* Tetromino Class stores
+index ... unique index for each specific tetromino in one game
+vertexPositionBufferArray ... Buffer Array for the Vertex Positions of the different tetromino blocks
+texcoordsBufferArray ... Buffer Array for the texturecoords of the different tetromino blocks
+mvMatrixArray ... mvMatrices of the different tetromino blocks
+blocks ... Stores the position of the blocks
+vectorToRotationOriginArray ... vector to the rotation origin of each block
+orientation ... orientation of the tetromino
+currX ... Current X position on the virtual grid (see gamemanger.js -> occupiedBlocks)
+currY ... Current Y position on the virtual grid (see gamemanger.js -> occupiedBlocks)
+*/
 class Tetromino{
 	
 	constructor(index,vertexPositionBufferArray, texcoordsBufferArray, mvMatrixArray, blocks, vectorToRotationOriginArray, orientation, currX, currY) {
@@ -13,15 +25,18 @@ class Tetromino{
 		this.blocklength=4;
 	}
 	
+	// Special mod function needed because of negative integers
 	mod(m,n){
 		return ((m % n) + n) % n;
 	}
 	
-	// returns the orientation of the tetromino of given index
+	// returns the orientation of the tetromino
 	getTetrominoOrientation(){
 		return this.mod(this.orientation,4);
 	}
 	
+	// if input is null it returns the position of the blocks according to the current orientation
+	// else it returns the position of the blocks accordint to the orientation given through the input (needed for boundary checks before a rotation)
 	getRotatedBlocks(input){
 		var orientation;
 		if(input!=null){
@@ -59,6 +74,7 @@ class Tetromino{
 		return result;
 	}
 	
+	//Deletes one block of given blockid (index)
 	deleteBlock(blockid){
 		this.vertexPositionBufferArray.splice(blockid,1);
 		this.texcoordsBufferArray.splice(blockid,1);
